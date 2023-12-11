@@ -11,6 +11,20 @@ const PORT = 3000
 app.use(express.json())
 ////這行程式碼告訴 Express 應用程式在處理請求時使用 JSON 解析中介軟體，這使得我們能夠方便地處理發送過來的 JSON 格式的請求。
 
+// 添加一个新的 GET API 端点
+//先处理 /api/answerModel 的路由
+app.get('/api/answerModel', async (req, res) => {
+    try {
+        // 查询所有的 answerModel 数据
+        const answerModels = await answerModel.find();
+        res.status(200).json(answerModels);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+// 处理 /answer 的路由
 app.get("/answer", (req, res) => {
     const targetNumber = RandomNumber();
     console.log("answer: " + targetNumber);
@@ -136,14 +150,3 @@ app.listen(PORT, () => {
 	console.log(`Server is running on http://localhost:${PORT}`)
 })這段程式碼不小心重複會造成 PORT = 3000 端口被占用?*/
 
-// 添加一个新的 GET API 端点
-app.get('/api/answerModel', async (req, res) => {
-    try {
-        // 查询所有的 answerModel 数据
-        const answerModels = await answerModel.find();
-        res.status(200).json(answerModels);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
