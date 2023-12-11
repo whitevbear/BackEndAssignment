@@ -65,14 +65,26 @@ const mongoose = require('mongoose')
 //引入 Mongoose 模組，這是一個 MongoDB 的物件模型工具，用來在 Node.js 中與 MongoDB 進行互動。
 	
 // 連接到 MongoDB
+/*MongoDB 驅動程序的部分選項，它們被標記為不推薦使用，因為它們在 Node.js Driver 版本 4.0.0 中已經被棄用，並且在下一個主要版本中將被移除。
 mongoose
 	.connect(uri, options)// 使用 Mongoose 的 connect 方法連接到 MongoDB。uri 是 MongoDB 的連接字串，而 options 是連接的選項。
 	.then(() => {
 		console.log('MongoDB is connected')
-})//如果連接成功，則在控制台中輸出 "MongoDB is connected"。
+})
 	.catch((err) => {
 		console.log(err)
-})//如果連接失敗，則捕捉錯誤，並在控制台中輸出錯誤訊息。
+
+})*/
+
+mongoose.connect(uri)
+    .then(() => {
+        console.log('MongoDB is connected');
+    })//如果連接成功，則在控制台中輸出 "MongoDB is connected"。
+    .catch((err) => {
+        console.log(err);
+    });//如果連接失敗，則捕捉錯誤，並在控制台中輸出錯誤訊息。
+
+
 
 //定義 Schema
 const Schema = mongoose.Schema; //const { Schema } = mongoose;
@@ -93,15 +105,15 @@ module.exports = answerModel;
 // POST API
 app.post('/api/answerModel', async (req, res) => {
 	try {
-	  const { createAt, numberOfGuesses, answer, isSuccess } = req.body;
+	 const { createAt, numberOfGuesses, answer, isSuccess } = req.body;
   
-	  // 使用 answerModel 創建新的遊戲結果
+	  // 使用 answerModel 創建新的結果
 	  const newAnswer = new answerModel({
 		createAt,
 		numberOfGuesses,
 		answer,
 		isSuccess
-	  });
+      });
   
 	  // 儲存到 MongoDB
 	  await newAnswer.save();
@@ -123,3 +135,15 @@ app.listen(PORT, () => {
   app.listen(PORT, () => {
 	console.log(`Server is running on http://localhost:${PORT}`)
 })這段程式碼不小心重複會造成 PORT = 3000 端口被占用?*/
+
+// 添加一个新的 GET API 端点
+app.get('/api/answerModel', async (req, res) => {
+    try {
+        // 查询所有的 answerModel 数据
+        const answerModels = await answerModel.find();
+        res.status(200).json(answerModels);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
