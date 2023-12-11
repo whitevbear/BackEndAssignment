@@ -54,3 +54,27 @@ function RandomNumber(){
 	return Math.floor(Math.random() * 100) + 1;
 	}
 	////targetNumber 是在 RandomNumber 函式內部的區域變數，無法在 app.get 的回應函式中直接訪問。要解決這個問題，你可以將 RandomNumber 函式的結果作為返回值。
+
+const mongoose = require('mongoose')
+//引入 Mongoose 模組，這是一個 MongoDB 的物件模型工具，用來在 Node.js 中與 MongoDB 進行互動。
+
+require('dotenv').config()
+//引入 dotenv 模組，用於讀取 .env 檔案中的環境變數。這樣你就能夠在 .env 中儲存敏感資訊，而不需要將其硬編碼在程式碼中。
+	
+const uri = process.env.MONGO_URI
+////從環境變數中讀取 MongoDB 的連接字串。在 .env 檔案中，你應該有一行類似 MONGO_URI=mongodb://your-mongodb-uri 的設定。
+const options = {
+		useNewUrlParser: true,
+		useUnifiedTopology: true,
+}// 定義連接 MongoDB 時的選項。這裡的選項包括使用新的 URL 解析器 (useNewUrlParser: true) 和使用統一的拓撲學 (useUnifiedTopology: true)。
+	
+// 連接到 MongoDB
+mongoose
+	.connect(uri, options)// 使用 Mongoose 的 connect 方法連接到 MongoDB。uri 是 MongoDB 的連接字串，而 options 是連接的選項。
+	.then(() => {
+		console.log('MongoDB is connected')
+})//如果連接成功，則在控制台中輸出 "MongoDB is connected"。
+	.catch((err) => {
+		console.log(err)
+})//如果連接失敗，則捕捉錯誤，並在控制台中輸出錯誤訊息。
+	
